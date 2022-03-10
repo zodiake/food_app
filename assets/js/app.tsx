@@ -22,15 +22,24 @@ import "../css/app.css"
 // Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
 import "phoenix_html"
 // Establish Phoenix Socket and LiveView configuration.
-import {Socket} from "phoenix"
-import {LiveSocket} from "phoenix_live_view"
+import { Socket } from "phoenix"
+import { LiveSocket } from "phoenix_live_view"
 import topbar from "../vendor/topbar"
+import App from "./react/App";
+import React from "react";
+import ReactDOM from "react-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+let liveSocket = new LiveSocket("/live", Socket, { params: { _csrf_token: csrfToken } })
 
 // Show progress bar on live navigation and form submits
-topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
+topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" })
 window.addEventListener("phx:page-loading-start", info => topbar.show())
 window.addEventListener("phx:page-loading-stop", info => topbar.hide())
 
@@ -42,3 +51,29 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+
+const rootElement = document.getElementById("root");
+function Expenses() {
+  return (
+    <main style={{ padding: "1rem 0" }}>
+      <h2>Expenses</h2>
+    </main>
+  );
+}
+function Invoices() {
+  return (
+    <main style={{ padding: "1rem 0" }}>
+      <h2>Invoices</h2>
+    </main>
+  );
+}
+ReactDOM.render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="expenses" element={<Expenses />} />
+      <Route path="invoices" element={<Invoices />} />
+    </Routes>
+  </BrowserRouter>,
+  rootElement
+);
